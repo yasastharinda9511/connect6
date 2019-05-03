@@ -1,97 +1,96 @@
- 1 /*Appendix A - The Main Loop*/
- 2
- 3 #include <p18f2550.h>
- 4 #include <usart.h>
- 5 #include <stdio.h>
- 6 #include <delays.h>
- 7 #include "config.h"
- 8 typedef unsigned char bool;
- 9 #define true 1
- 10 #define false 0
- 11 #define len(a) sizeof(a)/sizeof(a[0])
- 12 #define EN LATAbits.LATA0 /* PORT for RS */
- 13 #define TRIS_EN TRISAbits.TRISA0
- 14 #define RS LATAbits.LATA1 /* PORT for RS */
- 15 #define TRIS_RS TRISAbits.TRISA1 /* TRIS for RS*/
- 16 #define DATA_PORT PORTB //Data Port for LCD
- 17 #define TRIS_DATA_PORT TRISB
- 18
- 19 short k = 0;
- 20 short dup_array[2];
- 21 short List[30];
- 22 char LCDOpp[8]="Opp Move";
- 23 char LCDMy[8]="My Moves";
- 24 char LCDStart[7]="Welcome";
- 25 char SecondMove[8];
- 26 char FirstMove[4];
- 27 char OppMoves[8];
- 28 int Move1[2];
- 29 int Move2[2];
- 30 char PlayMove1[4],PlayMove2[4];
- 31 int x0,y0,x1,y1,x2,y2;
- 32 unsigned char side,Side[2];
- 33 int r;
- 34 unsigned char E='-';
- 35 #pragma idata large_idata //Changed Memory Bank size to fit the grid
- 36 char grid[19][19] = {{'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+  /*Appendix A - The Main Loop*/
+ 
+  #include <p18f2550.h>
+  #include <usart.h>
+  #include <stdio.h>
+  #include <delays.h>
+  #include "config.h"
+  typedef unsigned char bool;
+  #define true 1
+  #define false 0
+  #define len(a) sizeof(a)/sizeof(a[0])
+  #define EN LATAbits.LATA0 /* PORT for RS */
+  #define TRIS_EN TRISAbits.TRISA0
+  #define RS LATAbits.LATA1 /* PORT for RS */
+  #define TRIS_RS TRISAbits.TRISA1 /* TRIS for RS*/
+  #define DATA_PORT PORTB //Data Port for LCD
+  #define TRIS_DATA_PORT TRISB
+
+ short k = 0;
+ short dup_array[2];
+ short List[30];
+ char LCDOpp[8]="Opp Move";
+ char LCDMy[8]="My Moves";
+ char LCDStart[7]="Welcome";
+ char SecondMove[8];
+ char FirstMove[4];
+ char OppMoves[8];
+ int Move1[2];
+ int Move2[2];
+ char PlayMove1[4],PlayMove2[4];
+ int x0,y0,x1,y1,x2,y2;
+ unsigned char side,Side[2];
+ int r;
+ unsigned char E='-';
+ #pragma idata large_idata //Changed Memory Bank size to fit the grid
+ char grid[19][19] = {{'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 37 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 38 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 39 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 40 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 41 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 42 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 43 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 44 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 45 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 46 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 47 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 48 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 49 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 50 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 51 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+{'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 52 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 53 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
- 54 {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
+ {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'}};
- 55 #pragma idata
- 56 int i=0;
- 57 int j=0;
- 58
- 59 short oppent_array1[2];
- 60 short oppent_array2[2];
- 61 short our_array1[2];
- 62 short our_array2[2];
- 63 short turn=1;
- 64 short* ptr;
- 65 short Moves[4];
- 66 short *M;
- 67
- 68 /*-----------------------------------Main Loop-------------------------------*/
- 69 void main(void) {
- 70 TRISA = 0x00;
- 71 TRISB=0X00; //Sets A & B ports as outputs
- 72 ADCON1 = 0x0F; //make RA digital
- 73 OSCCON=0X76;
- 74 OpenUSART(USART_TX_INT_OFF & //Initiate the USART Connection
- 75 USART_RX_INT_OFF &
+ #pragma idata
+ int i=0;
+ int j=0;
+ short oppent_array1[2];
+ short oppent_array2[2];
+ short our_array1[2];
+ short our_array2[2];
+ short turn=1;
+ short* ptr;
+ short Moves[4];
+ short *M;
+ 
+ /*-----------------------------------Main Loop-------------------------------*/
+  void main(void) {
+  TRISA = 0x00;
+  TRISB=0X00; //Sets A & B ports as outputs
+  ADCON1 = 0x0F; //make RA digital
+  OSCCON=0X76;
+  OpenUSART(USART_TX_INT_OFF & //Initiate the USART Connection
+  USART_RX_INT_OFF &
  76 USART_ASYNCH_MODE &
  77 USART_EIGHT_BIT &
  78 USART_CONT_RX &
