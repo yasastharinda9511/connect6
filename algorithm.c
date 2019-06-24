@@ -345,305 +345,305 @@ clear_display();
  if (d==0){Dir_h=6;Dir_v=1;initial_v=0;}//Horizontal Check
  else if (d==1){Dir_h=1;Dir_v=6;initial_h=0;}//Vertical Check
  else if(d==2){Dir_h=6;Dir_v=6;}//Diagonal 1 Check
- 26 else{Dir_h=6;Dir_v=-6;initial_v=-1;step=-1;}
- 27 for(h=initial_h;h<Dir_h;h++){
- 28 if (outer_break){outer_break=false;break;}
- 29 if (v<Dir_v){
- 30 for(v=initial_v;v<Dir_v;v=v+step){
- 31 short R=x-v;
- 32 short C=y-h;
- 33 if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
- 34 if(R>18 || R<0 || C>18 || C<0){break;}
- 35 if (grid[R][C]==O){outer_break=true;break;}
- 36 else if(grid[R][C]=='-'){Dir_Inf+=e;}
- 37 else if(grid[R][C]==X){
- 38 if(d==0 || d==1){
- 39 Dir_Inf+=(21-abs(h))*initial_h;
- 40 Dir_Inf+=(21-abs(v))*initial_v;
- 41 }else{Dir_Inf+=(21-abs(h));}}}}
- 42 else{for(v=initial_v;v>Dir_v;v=v+step){
- 43 short R=x-v;
- 44 short C=y-h;
- 45 if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
- 46 if(R>18 || R<0 || C>18 || C<0){break;}
- 47 if (grid[R][C]==O){outer_break=true;break;
- 48 }else if(grid[R][C]=='-'){Dir_Inf+=e;}
- 49 else if(grid[R][C]==X){
- 50 if(d==0 || d==1){
- 51 Dir_Inf+=(21-abs(h))*initial_h;
- 52 Dir_Inf+=(21-abs(v))*initial_v;
- 53 }else{Dir_Inf+=(21-abs(h));}}}}}
- 54 for(h=initial_h;h<Dir_h;h++){
- 55 if (outer_break){outer_break=false;break;}
- 56 if(v<Dir_v){
- 57 for(v=initial_v;v<Dir_v;v=v+step){
- 58 short R=x+v;
- 59 short C=y+h;
- 60 if ((d==2 || d==3) && abs(h)!=abs(v)){\continue;}
- 61 if(R>18 || R<0 || C>18 || C<0){outer_break=true;break;}
- 62 if (grid[R][C]==O){outer_break=true;break;
- 63 }else if(grid[R][C]=='-'){Dir_Inf+=e;
- 64 }else if(grid[R][C]==X){
- 65 if(d==0 || d==1){
- 66 Dir_Inf+=(21-abs(h))*initial_h;
- 67 Dir_Inf+=(21-abs(v))*initial_v;
- 68 }else{Dir_Inf+=(21-abs(h));}}}
- 69 }else{for(v=initial_v;v>Dir_v;v=v+step){
- 70 short R=x+v;
- 71 short C=y+h;
- 72 if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
- 73 if(R>18 || R<0 || C>18 || C<0){outer_break=true;break;}
- 74 if (grid[R][C]==O){outer_break=true;break;
- 75 }else if(grid[R][C]=='-'){Dir_Inf+=e;
- 76 }else if(grid[R][C]==X){
- 77 if(d==0 || d==1){
- 78 Dir_Inf+=(21-abs(h))*initial_h;
- 79 Dir_Inf+=(21-abs(v))*initial_v;
- 80 }else{Dir_Inf+=(21-abs(h));}}}}}
- 81 Inf+=Dir_Inf*Dir_Inf;}
- 82 return Inf;}
- 83 bool duplicate(short List[],short l, char side){
- 84 char X,O;int a,b;short i = 0;short max = 0;short r = 0;
- 85 short m = 0;short count;bool dup = false;
- 86 if(side =='W'){
- 87 O='B';//Opponent side
- 88 X='W';//Our side
- 89 }else if(side =='B'){
- 90 O='W';//Opponent side
- 91 X='B';}//Our side
- 92 for(m=0;m<2;m++){dup_array[m] = -1;}
- 93 for (i = 0; i < l; i=i+2){count = 0;
- 94 for (r = i; r < l; r=r+2){
- 95 if ((List[r] == List[i])&&(List[r+1]==List[i+1])){
- 96 count += 1;}}
- 97 if (count > max){
- 98 max = count;
- 99 dup_array[0] = List[i];
-100 dup_array[1] = List[i+1];
-101 dup = true;
-102 }else if(count == max){
-103 a = influence(List[i],List[i+1],grid,O);
-104 b = influence(dup_array[0],dup_array[1],grid,O);
-105 if (a>b){
-106 dup_array[0] = List[i];
-107 dup_array[1] = List[i+1];
-108 dup = true;}}}
-109 return dup;}
-110 void win(char grid[19][19], short a[2],short b[2],char side){
-111 short x[2], y[2];char O,X;short i,r;
-112 for(r = 0; r<len(List);r++){List[r] = -1;}
-113 k = 0;
-114 if(side =='W'){
-115 O='B';//Opponent side
-116 X='W';}//Our side
-117 else if(side =='B'){
-118 O='W';//Opponent side
-119 X='B';}//Our side
-120 x[0] = a[0];x[1] = b[0];y[0] = a[1];y[1] = b[1];
-121 for(i=0;i<2;i++){int r;//Horizontal win check
-122 for(r = 0;r<6;r++){
-123 int z;
-124 int emphori[10];
-125 int countHoriW=0;
-126 int countemphori=0;
-127 for(z=0;z<6;z++){
-128 if (x[i]+z-r<0 || x[i]+z-r>18 ){break;}
-129 if (grid[x[i]+z-r][y[i]] == X){countHoriW+=1;}
-130 if (grid[x[i]+z-r][y[i]]=='-'){
-131 emphori[countemphori]=x[i]+z-r;
-132 emphori[countemphori+1]=y[i];
-133 countemphori+=2;}}
-134 if (countemphori==4 && countHoriW==4){
-135 List[k] = emphori[0];
-136 List[k+1] = emphori[1];
-137 k += 2;
-138 List[k] = emphori[2];
-139 List[k+1] = emphori[3];
-140 k += 2;}
-141 else if(countemphori==2 && countHoriW==5){
-142 List[k] = emphori[0];
-143 List[k+1] = emphori[1];
-144 k += 2;}}
-145 for(r=0;r<6;r++){//Vertical win check
-146 int countBackho=0;
-147 int empback[10];
-148 int countempback=0;
-149 int z;
-150 for(z=0;z<6;z++){
-151 if(y[i]+z-r<0 || y[i]+z-r>18){break;}
-152 if (grid[x[i]][y[i]+z-r]==X){countBackho+=1;}
-153 if (grid[x[i]][y[i]+z-r]=='-'){
-154 empback[countempback]=x[i];
-155 empback[countempback+1]=y[i]+z-r;
-156 countempback+=2;}}
-157 if (countempback==4 && countBackho==4){
-158 List[k] = empback[0];
-159 List[k+1] = empback[1];
-160 k += 2;
-161 List[k] = empback[2];
-162 List[k+1] = empback[3];
-163 k += 2;}
-164 else if(countempback==2 && countBackho==5){
-165 List[k] = empback[0];
-166 List[k+1] = empback[1];
-167 k += 2;}}
-168 for(r=0;r<6;r++){//Diagonal 1 win check
-169 int countdia=0;
-170 int countempdia=0;
-171 static int empdia[10];
-172 int z;
-173 for(z=0;z<6;z++){
-174 if(x[i]-z+r<0 || y[i]+z-r<0 || x[i]-z+r>18 || y[i]+z-r>18 ){break;}
-175 if (grid[x[i]-z+r][y[i]+z-r]==X){countdia+=1;}
-176 if (grid[x[i]-z+r][y[i]+z-r]=='-'){
-177 empdia[countempdia]=x[i]-z+r;
-178 empdia[countempdia+1]=y[i]+z-r;
-179 countempdia+=2;}}
-180 if (countempdia==4 && countdia==4){
-181 List[k] = empdia[0];
-182 List[k+1] = empdia[1];
-183 k += 2;
-184 List[k] = empdia[2];
-185 List[k+1] = empdia[3];
-186 k += 2;}
-187 else if(countempdia==2 && countdia==5){
-188 List[k] = empdia[0];
-189 List[k+1] = empdia[1];
-190 k += 2;}}
-191 for(r=0;r<6;r++){//Diagonal 2 win check
-192 int countdiagW=0;
-193 int countempdiag=0;
-194 static int empdiag[10];
-195 int z;
-196 for(z=0;z<6;z++){
-197 if(x[i]+z-r<0 || y[i]+z-r<0 || x[i]+z-r>18 || y[i]+z-r>18 ){break;}
-198 if (grid[x[i]+z-r][y[i]+z-r]==X){countdiagW+=1;}
-199 if (grid[x[i]+z-r][y[i]+z-r]=='-'){
-200 empdiag[countempdiag]=x[i]+z-r;
-201 empdiag[countempdiag+1]=y[i]+z-r;
-202 countempdiag+=2;}}
-203 if (countempdiag==4 && countdiagW==4){
-204 List[k] = empdiag[0];
-205 List[k+1] = empdiag[1];
-206 k += 2;
-207 List[k] = empdiag[2];
-208 List[k+1] = empdiag[3];
-209 k += 2;}
-210 else if(countempdiag==2 && countdiagW==5){
-211 List[k] = empdiag[0];
-212 List[k+1] = empdiag[1];
-213 k += 2;}}}}
-214 short* empyCoords(short a[2], char side){
-215 bool EmptySpace=false;
-216 char O,X;short i=0;short r=0;int influ=0;
-217 int max=0;short x,y;static short EmptyArray[2];
-218 if(side =='W'){
-219 O='B';//Opponent side
-220 X='W';}//Our side
-221 else if(side =='B'){
-222 O='W';//Opponent side
-223 X='B';}//Our side
-224 x = a[0]; y = a[1];
-225 for(i=-5;i<6;i++){
-226 for (r=-5;r<6;r++){
-227 if (x+i<0 || x+i>18){break;}
-228 if (y+r<0 || y+r>18){continue;}
-229 if (grid[x+i][y+r]=='-'){
-230 influ=influence(x+i,y+r,grid,O)+influence(x+i,y+r,grid,X);
-231 if (max<influ){
-232 EmptyArray[0]=x+i;
-233 EmptyArray[1]=y+r;
-234 max=influ;
-235 EmptySpace=true;}}}}
-236 if (!EmptySpace){
-237 for (i=0;i<19;i++){
-238 for (r=0;r<19;r++){
-239 if (grid[i][r]=='-'){
-240 influ=influence(i,r,grid,O)+influence(i,r,grid,X);
-241 if (max<influ){
-242 EmptyArray[0]=i;
-243 EmptyArray[1]=r;
-244 max=influ;}}}}}
-245 grid[EmptyArray[0]][EmptyArray[1]] = X;
-246 return EmptyArray;}
-247 short* Con6player(short oppent_array1[2],short oppent_array2[2],char grid[19][19],char side){
-248 char O,X;short i;short r;short *p;static short main_array[4];
-249 if(side =='W'){O='B';X='W';}
-250 else if(side =='B'){O='W';X='B';}
-251 if (turn==1 && side=='W' ){
-252 grid[oppent_array1[0]][oppent_array1[1]]=O;
-253 p = empyCoords(oppent_array1,X);
-254 our_array1[0]=*p;
-255 our_array1[1]=*(p+1);
-256 p = empyCoords(oppent_array1,X);//changed
-257 our_array2[0]=*p;
-258 our_array2[1]=*(p+1);
-259 main_array[0]=our_array1[0];
-260 main_array[1]=our_array1[1];
-261 main_array[2]=our_array2[0];
-262 main_array[3]=our_array2[1];
-263 turn+=1;
-264 }else{
-265 grid[oppent_array1[0]][oppent_array1[1]]=O;
-266 grid[oppent_array2[0]][oppent_array2[1]]=O;
-267 win(grid,our_array1,our_array2,X);//our win
-268 if(k!=0){short j;int inf1=0;int inf2=0;short num1, num2;
-269 for (j =0; j < k; j=j+2){int t;
-270 t = influence(List[j],List[j+1],grid,X);
-271 if((inf1 < t) || (inf2 < t)){
-272 if (inf1 < t){inf2 = inf1;inf1 = t;num2 = num1;num1 = j;}
-273 else{inf2 = t;num2 = j;}}}
-274 grid[List[num1]][List[num1+1]]=X;
-275 our_array1[0] = List[num1];
-276 our_array1[1] = List[num1+1];
-277 grid[List[num2]][List[num2+1]]=X;
-278 our_array2[0] = List[num2];
-279 our_array2[1] = List[num2+1];
-280 main_array[0]=our_array1[0];
-281 main_array[1]=our_array1[1];
-282 main_array[2]=our_array2[0];
-283 main_array[3]=our_array2[1];
-284 }else{short s=0;short chance=2;
-285 for(s=0;s<2;s++){win(grid,oppent_array1,oppent_array2,O);//opponent win
-286 if(k!=0){
-287 if (duplicate(List,k,side)){
-288 grid[dup_array[0]][dup_array[1]]=X;
-289 if (chance==2){
-290 main_array[0]=dup_array[0];
-291 main_array[1]=dup_array[1];
-292 chance+=-1;
-293 }else{
-294 main_array[2]=dup_array[0];
-295 main_array[3]=dup_array[1];}
-296 }else{short j;int inf=0;int t;short num;
-297 for (j =0; j < k; j=j+2){
-298 t = influence(List[j],List[j+1],grid,O);
-299 if (inf < t){inf = t;num = j;}}
-300 grid[List[num]][List[num+1]]=X;
-301 if (chance==2){
-302 main_array[0]=List[num];
-303 main_array[1]=List[num+1];
-304 chance+=-1;
-305 }else{
-306 main_array[2]=List[num];
-307 main_array[3]=List[num+1];}}
-308 }else{if (chance==2){
-309 p = empyCoords(our_array1,X);//Changed
-310 our_array1[0]=*p;
-311 our_array1[1]=*(p+1);
-312 p = empyCoords(our_array1,X);
-313 our_array2[0]=*p;
-314 our_array2[1]=*(p+1);
-315 main_array[0]=our_array1[0];
-316 main_array[1]=our_array1[1];
-317 main_array[2]=our_array2[0];
-318 main_array[3]=our_array2[1];
-319 break;
-320 }else{
-321 p = empyCoords(oppent_array2,X);//Changed
-322 our_array2[0]=*p;
-323 our_array2[1]=*(p+1);
-324 main_array[2]=our_array2[0];
-325 main_array[3]=our_array2[1];}}}}}
-326 return main_array;}
-327 //Algorithm for the game
+ else{Dir_h=6;Dir_v=-6;initial_v=-1;step=-1;}
+ for(h=initial_h;h<Dir_h;h++){
+ if (outer_break){outer_break=false;break;}
+ if (v<Dir_v){
+ for(v=initial_v;v<Dir_v;v=v+step){
+ short R=x-v;
+ short C=y-h;
+ if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
+ if(R>18 || R<0 || C>18 || C<0){break;}
+ if (grid[R][C]==O){outer_break=true;break;}
+ else if(grid[R][C]=='-'){Dir_Inf+=e;}
+ else if(grid[R][C]==X){
+ if(d==0 || d==1){
+ Dir_Inf+=(21-abs(h))*initial_h;
+ Dir_Inf+=(21-abs(v))*initial_v;
+ }else{Dir_Inf+=(21-abs(h));}}}}
+  else{for(v=initial_v;v>Dir_v;v=v+step){
+ short R=x-v;
+ short C=y-h;
+  if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
+  if(R>18 || R<0 || C>18 || C<0){break;}
+  if (grid[R][C]==O){outer_break=true;break;
+  }else if(grid[R][C]=='-'){Dir_Inf+=e;}
+  else if(grid[R][C]==X){
+  if(d==0 || d==1){
+  Dir_Inf+=(21-abs(h))*initial_h;
+  Dir_Inf+=(21-abs(v))*initial_v;
+ }else{Dir_Inf+=(21-abs(h));}}}}}
+  for(h=initial_h;h<Dir_h;h++){
+  if (outer_break){outer_break=false;break;}
+  if(v<Dir_v){
+  for(v=initial_v;v<Dir_v;v=v+step){
+  short R=x+v;
+  short C=y+h;
+  if ((d==2 || d==3) && abs(h)!=abs(v)){\continue;}
+  if(R>18 || R<0 || C>18 || C<0){outer_break=true;break;}
+  if (grid[R][C]==O){outer_break=true;break;
+  }else if(grid[R][C]=='-'){Dir_Inf+=e;
+  }else if(grid[R][C]==X){
+  if(d==0 || d==1){
+  Dir_Inf+=(21-abs(h))*initial_h;
+  Dir_Inf+=(21-abs(v))*initial_v;
+  }else{Dir_Inf+=(21-abs(h));}}}
+  }else{for(v=initial_v;v>Dir_v;v=v+step){
+  short R=x+v;
+  short C=y+h;
+  if ((d==2 || d==3) && abs(h)!=abs(v)){continue;}
+  if(R>18 || R<0 || C>18 || C<0){outer_break=true;break;}
+  if (grid[R][C]==O){outer_break=true;break;
+  }else if(grid[R][C]=='-'){Dir_Inf+=e;
+  }else if(grid[R][C]==X){
+ if(d==0 || d==1){
+ Dir_Inf+=(21-abs(h))*initial_h;
+  Dir_Inf+=(21-abs(v))*initial_v;
+  }else{Dir_Inf+=(21-abs(h));}}}}}
+  Inf+=Dir_Inf*Dir_Inf;}
+ return Inf;}
+  bool duplicate(short List[],short l, char side){
+  char X,O;int a,b;short i = 0;short max = 0;short r = 0;
+  short m = 0;short count;bool dup = false;
+  if(side =='W'){
+  O='B';//Opponent side
+  X='W';//Our side
+  }else if(side =='B'){
+  O='W';//Opponent side
+  X='B';}//Our side
+  for(m=0;m<2;m++){dup_array[m] = -1;}
+  for (i = 0; i < l; i=i+2){count = 0;
+  for (r = i; r < l; r=r+2){
+  if ((List[r] == List[i])&&(List[r+1]==List[i+1])){
+  count += 1;}}
+ if (count > max){
+  max = count;
+ dup_array[0] = List[i];
+dup_array[1] = List[i+1];
+ dup = true;
+ }else if(count == max){
+ a = influence(List[i],List[i+1],grid,O);
+ b = influence(dup_array[0],dup_array[1],grid,O);
+ if (a>b){
+ dup_array[0] = List[i];
+ dup_array[1] = List[i+1];
+ dup = true;}}}
+ return dup;}
+  void win(char grid[19][19], short a[2],short b[2],char side){
+ short x[2], y[2];char O,X;short i,r;
+ for(r = 0; r<len(List);r++){List[r] = -1;}
+ k = 0;
+ if(side =='W'){
+ O='B';//Opponent side
+ X='W';}//Our side
+ else if(side =='B'){
+  O='W';//Opponent side
+ X='B';}//Our side
+ x[0] = a[0];x[1] = b[0];y[0] = a[1];y[1] = b[1];
+ for(i=0;i<2;i++){int r;//Horizontal win check
+ for(r = 0;r<6;r++){
+ int z;
+ int emphori[10];
+ int countHoriW=0;
+ int countemphori=0;
+  for(z=0;z<6;z++){
+ if (x[i]+z-r<0 || x[i]+z-r>18 ){break;}
+ if (grid[x[i]+z-r][y[i]] == X){countHoriW+=1;}
+ if (grid[x[i]+z-r][y[i]]=='-'){
+ emphori[countemphori]=x[i]+z-r;
+ emphori[countemphori+1]=y[i];
+ countemphori+=2;}}
+ if (countemphori==4 && countHoriW==4){
+ List[k] = emphori[0];
+ List[k+1] = emphori[1];
+ k += 2;
+List[k] = emphori[2];
+ List[k+1] = emphori[3];
+ k += 2;}
+ else if(countemphori==2 && countHoriW==5){
+ List[k] = emphori[0];
+ List[k+1] = emphori[1];
+ k += 2;}}
+ for(r=0;r<6;r++){//Vertical win check
+int countBackho=0;
+ int empback[10];
+ int countempback=0;
+ int z;
+ for(z=0;z<6;z++){
+ if(y[i]+z-r<0 || y[i]+z-r>18){break;}
+ if (grid[x[i]][y[i]+z-r]==X){countBackho+=1;}
+ if (grid[x[i]][y[i]+z-r]=='-'){
+ empback[countempback]=x[i];
+ empback[countempback+1]=y[i]+z-r;
+  countempback+=2;}}
+ if (countempback==4 && countBackho==4){
+ List[k] = empback[0];
+ List[k+1] = empback[1];
+ k += 2;
+ List[k] = empback[2];
+ List[k+1] = empback[3];
+ k += 2;}
+ else if(countempback==2 && countBackho==5){
+ List[k] = empback[0];
+ List[k+1] = empback[1];
+ k += 2;}}
+ for(r=0;r<6;r++){//Diagonal 1 win check
+ int countdia=0;
+ int countempdia=0;
+ static int empdia[10];
+ int z;
+ for(z=0;z<6;z++){
+ if(x[i]-z+r<0 || y[i]+z-r<0 || x[i]-z+r>18 || y[i]+z-r>18 ){break;}
+ if (grid[x[i]-z+r][y[i]+z-r]==X){countdia+=1;}
+ if (grid[x[i]-z+r][y[i]+z-r]=='-'){
+ empdia[countempdia]=x[i]-z+r;
+ empdia[countempdia+1]=y[i]+z-r;
+ countempdia+=2;}}
+ if (countempdia==4 && countdia==4){
+ List[k] = empdia[0];
+ List[k+1] = empdia[1];
+ k += 2;
+ List[k] = empdia[2];
+ List[k+1] = empdia[3];
+ k += 2;}
+ else if(countempdia==2 && countdia==5){
+ List[k] = empdia[0];
+ List[k+1] = empdia[1];
+ k += 2;}}
+ for(r=0;r<6;r++){//Diagonal 2 win check
+ int countdiagW=0;
+  int countempdiag=0;
+ static int empdiag[10];
+ int z;
+ for(z=0;z<6;z++){
+ if(x[i]+z-r<0 || y[i]+z-r<0 || x[i]+z-r>18 || y[i]+z-r>18 ){break;}
+ if (grid[x[i]+z-r][y[i]+z-r]==X){countdiagW+=1;}
+ if (grid[x[i]+z-r][y[i]+z-r]=='-'){
+ empdiag[countempdiag]=x[i]+z-r;
+ empdiag[countempdiag+1]=y[i]+z-r;
+ countempdiag+=2;}}
+ if (countempdiag==4 && countdiagW==4){
+ List[k] = empdiag[0];
+ List[k+1] = empdiag[1];
+ k += 2;
+ List[k] = empdiag[2];
+ List[k+1] = empdiag[3];
+k += 2;}
+ else if(countempdiag==2 && countdiagW==5){
+ List[k] = empdiag[0];
+ List[k+1] = empdiag[1];
+ k += 2;}}}}
+short* empyCoords(short a[2], char side){
+ bool EmptySpace=false;
+ char O,X;short i=0;short r=0;int influ=0;
+ int max=0;short x,y;static short EmptyArray[2];
+ if(side =='W'){
+ O='B';//Opponent side
+ X='W';}//Our side
+ else if(side =='B'){
+ O='W';//Opponent side
+ X='B';}//Our side
+x = a[0]; y = a[1];
+ for(i=-5;i<6;i++){
+ for (r=-5;r<6;r++){
+ if (x+i<0 || x+i>18){break;}
+ if (y+r<0 || y+r>18){continue;}
+ if (grid[x+i][y+r]=='-'){
+ influ=influence(x+i,y+r,grid,O)+influence(x+i,y+r,grid,X);
+ if (max<influ){
+ EmptyArray[0]=x+i;
+ EmptyArray[1]=y+r;
+ max=influ;
+ EmptySpace=true;}}}}
+ if (!EmptySpace){
+ for (i=0;i<19;i++){
+ for (r=0;r<19;r++){
+ if (grid[i][r]=='-'){
+ influ=influence(i,r,grid,O)+influence(i,r,grid,X);
+ if (max<influ){
+ EmptyArray[0]=i;
+ EmptyArray[1]=r;
+ max=influ;}}}}}
+ grid[EmptyArray[0]][EmptyArray[1]] = X;
+ return EmptyArray;}
+ short* Con6player(short oppent_array1[2],short oppent_array2[2],char grid[19][19],char side){
+ char O,X;short i;short r;short *p;static short main_array[4];
+ if(side =='W'){O='B';X='W';}
+ else if(side =='B'){O='W';X='B';}
+ if (turn==1 && side=='W' ){
+ grid[oppent_array1[0]][oppent_array1[1]]=O;
+ p = empyCoords(oppent_array1,X);
+ our_array1[0]=*p;
+ our_array1[1]=*(p+1);
+ p = empyCoords(oppent_array1,X);//changed
+ our_array2[0]=*p;
+ our_array2[1]=*(p+1);
+ main_array[0]=our_array1[0];
+ main_array[1]=our_array1[1];
+ main_array[2]=our_array2[0];
+ main_array[3]=our_array2[1];
+ turn+=1;
+ }else{
+ grid[oppent_array1[0]][oppent_array1[1]]=O;
+ grid[oppent_array2[0]][oppent_array2[1]]=O;
+ win(grid,our_array1,our_array2,X);//our win
+ if(k!=0){short j;int inf1=0;int inf2=0;short num1, num2;
+ for (j =0; j < k; j=j+2){int t;
+ t = influence(List[j],List[j+1],grid,X);
+ if((inf1 < t) || (inf2 < t)){
+ if (inf1 < t){inf2 = inf1;inf1 = t;num2 = num1;num1 = j;}
+ else{inf2 = t;num2 = j;}}}
+ grid[List[num1]][List[num1+1]]=X;
+ our_array1[0] = List[num1];
+ our_array1[1] = List[num1+1];
+ grid[List[num2]][List[num2+1]]=X;
+ our_array2[0] = List[num2];
+ our_array2[1] = List[num2+1];
+ main_array[0]=our_array1[0];
+ main_array[1]=our_array1[1];
+ main_array[2]=our_array2[0];
+ main_array[3]=our_array2[1];
+ }else{short s=0;short chance=2;
+ for(s=0;s<2;s++){win(grid,oppent_array1,oppent_array2,O);//opponent win
+ if(k!=0){
+ if (duplicate(List,k,side)){
+ grid[dup_array[0]][dup_array[1]]=X;
+ if (chance==2){
+ main_array[0]=dup_array[0];
+ main_array[1]=dup_array[1];
+ chance+=-1;
+ }else{
+ main_array[2]=dup_array[0];
+ main_array[3]=dup_array[1];}
+ }else{short j;int inf=0;int t;short num;
+ for (j =0; j < k; j=j+2){
+ t = influence(List[j],List[j+1],grid,O);
+ if (inf < t){inf = t;num = j;}}
+ grid[List[num]][List[num+1]]=X;
+ if (chance==2){
+ main_array[0]=List[num];
+ main_array[1]=List[num+1];
+ chance+=-1;
+ }else{
+ main_array[2]=List[num];
+ main_array[3]=List[num+1];}}
+ }else{if (chance==2){
+ p = empyCoords(our_array1,X);//Changed
+ our_array1[0]=*p;
+ our_array1[1]=*(p+1);
+ p = empyCoords(our_array1,X);
+ our_array2[0]=*p;
+ our_array2[1]=*(p+1);
+ main_array[0]=our_array1[0];
+ main_array[1]=our_array1[1];
+ main_array[2]=our_array2[0];
+ main_array[3]=our_array2[1];
+ break;
+}else{
+ p = empyCoords(oppent_array2,X);//Changed
+ our_array2[0]=*p;
+ our_array2[1]=*(p+1);
+ main_array[2]=our_array2[0];
+ main_array[3]=our_array2[1];}}}}}
+ return main_array;}
+ //Algorithm for the game
