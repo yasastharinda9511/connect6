@@ -33,6 +33,8 @@
  int r;
  unsigned char E='-';
  #pragma idata large_idata //Changed Memory Bank size to fit the grid
+
+
  char grid[19][19] = {{'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'},
  {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
@@ -71,6 +73,7 @@
 '-'},
  {'-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-',
 '-'}};
+
  #pragma idata
  int i=0;
  int j=0;
@@ -100,15 +103,18 @@
   while (BusyUSART());
   while (!DataRdyUSART());
   side=ReadUSART(); //Reads the side to play
+    
   for (i=0;i<=3;i++){
   while (!DataRdyUSART());
   FirstMove[i]=ReadUSART(); //Reads the first move
   }
+    
   x0=(FirstMove[0]-'0')*10+(FirstMove[1]-'0');
   x0=x0-1;
   y0=(FirstMove[2]-'0')*10+(FirstMove[3]-'0');
   y0=y0-1;
    //conversion of string to an array
+    
  if (side=='B' && turn==1){
  grid[x0][y0]='B';
  our_array1[0]=x0;
@@ -116,20 +122,20 @@
  display_my(FirstMove,FirstMove);
  }
 else if (side=='W' && turn==1){
-x1=x0;
-y1=y0;
-x2=x1;
-y2=y1;
-display_opp(FirstMove);
-  oppent_array1[0]=x1;
-  oppent_array1[1]=y1;
-  oppent_array2[0]=x2;
-  oppent_array2[1]=y2;
-  
-  M=Con6player(oppent_array1,oppent_array2,grid,side);
-  for (i=0;i<4;i++){
-  Moves[i]=*(M+i);  
-  } //Returns the moves to be played  
+    x1=x0;
+    y1=y0;
+    x2=x1;
+    y2=y1;
+    display_opp(FirstMove);
+      oppent_array1[0]=x1;
+      oppent_array1[1]=y1;
+      oppent_array2[0]=x2;
+      oppent_array2[1]=y2;
+
+      M=Con6player(oppent_array1,oppent_array2,grid,side);
+      for (i=0;i<4;i++){
+      Moves[i]=*(M+i);  
+      } //Returns the moves to be played  
   
   PlayMove1[0]=((Moves[0]+1)/10)+'0';
   PlayMove1[1]=((Moves[0]+1)%10)+'0';
@@ -140,16 +146,20 @@ display_opp(FirstMove);
   PlayMove2[2]=((Moves[3]+1)/10)+'0';
   PlayMove2[3]=((Moves[3]+1)%10)+'0';
   //conversion of the array to a string
+  
   for (i=0;i<=3;i++){
   while (BusyUSART());
   WriteUSART(PlayMove1[i]); //Sends the first move
   }
+  
   for (i=0;i<=3;i++){
   while (BusyUSART());
   WriteUSART(PlayMove2[i]); //Sends the second move
    }
+  
    display_my(PlayMove1,PlayMove2);
  }
+    
    while(1){
    for (i=0;i<=7;i++){
    while (!DataRdyUSART()); //reads the Opponents moves
