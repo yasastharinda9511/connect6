@@ -91,261 +91,260 @@
   OSCCON=0X76;
   OpenUSART(USART_TX_INT_OFF & //Initiate the USART Connection
   USART_RX_INT_OFF &
- 76 USART_ASYNCH_MODE &
- 77 USART_EIGHT_BIT &
- 78 USART_CONT_RX &
- 79 USART_BRGH_HIGH &
- 80 USART_ADDEN_OFF, 26);
- 81 lcd_init(); //Initiate the LCD
- 82 while (BusyUSART());
- 83 while (!DataRdyUSART());
- 84 side=ReadUSART(); //Reads the side to play
- 85 for (i=0;i<=3;i++){
- 86 while (!DataRdyUSART());
- 87 FirstMove[i]=ReadUSART(); //Reads the first move
- 88 }
- 89 x0=(FirstMove[0]-'0')*10+(FirstMove[1]-'0');
- 90 x0=x0-1;
- 91 y0=(FirstMove[2]-'0')*10+(FirstMove[3]-'0');
- 92 y0=y0-1;
- 93 //conversion of string to an array
- 94 if (side=='B' && turn==1){
- 95 grid[x0][y0]='B';
- 96 our_array1[0]=x0;
- 97 our_array1[1]=y0;
- 98 display_my(FirstMove,FirstMove);
- 99 }
-100 else if (side=='W' && turn==1){
-101 x1=x0;
-102 y1=y0;
-103 x2=x1;
-104 y2=y1;
-105 display_opp(FirstMove);
-106 oppent_array1[0]=x1;
-107 oppent_array1[1]=y1;
-108 oppent_array2[0]=x2;
-109 oppent_array2[1]=y2;
-110
-111 M=Con6player(oppent_array1,oppent_array2,grid,side);
-112 for (i=0;i<4;i++){
-113 Moves[i]=*(M+i);
-114 } //Returns the moves to be played
-115
-116 PlayMove1[0]=((Moves[0]+1)/10)+'0';
-117 PlayMove1[1]=((Moves[0]+1)%10)+'0';
-118 PlayMove1[2]=((Moves[1]+1)/10)+'0';
-119 PlayMove1[3]=((Moves[1]+1)%10)+'0';
-120 PlayMove2[0]=((Moves[2]+1)/10)+'0';
-121 PlayMove2[1]=((Moves[2]+1)%10)+'0';
-122 PlayMove2[2]=((Moves[3]+1)/10)+'0';
-123 PlayMove2[3]=((Moves[3]+1)%10)+'0';
-124 //conversion of the array to a string
-125 for (i=0;i<=3;i++){
-126 while (BusyUSART());
-127 WriteUSART(PlayMove1[i]); //Sends the first move
-128 }
-129 for (i=0;i<=3;i++){
-130 while (BusyUSART());
-131 WriteUSART(PlayMove2[i]); //Sends the second move
-132 }
-133 display_my(PlayMove1,PlayMove2);
-134 }
-135 while(1){
-136 for (i=0;i<=7;i++){
-137 while (!DataRdyUSART()); //reads the Opponents moves
-138 SecondMove[i]=ReadUSART();
-139 }
-140 x1=(SecondMove[0]-'0')*10+(SecondMove[1]-'0');
-141 x1=x1-1;
-142 y1=(SecondMove[2]-'0')*10+(SecondMove[3]-'0');
-143 y1=y1-1;
-144 x2=(SecondMove[4]-'0')*10+(SecondMove[5]-'0');
-145 x2=x2-1;
-146 y2=(SecondMove[6]-'0')*10+(SecondMove[7]-'0');
-147 y2=y2-1;
-148 //conversion of string to array
-149 display_opp(SecondMove); //Displays opponent move on LCD
-150 oppent_array1[0]=x1;
-151 oppent_array1[1]=y1;
-152 oppent_array2[0]=x2;
-153 oppent_array2[1]=y2;
-154
-155 M=Con6player(oppent_array1,oppent_array2,grid,side); //returns the moves to be sent
-156 for (i=0;i<4;i++){
-157 Moves[i]=*(M+i);
-158 }
-159 PlayMove1[0]=((Moves[0]+1)/10)+'0'; //conversion of array to string
-160 PlayMove1[1]=((Moves[0]+1)%10)+'0';
-161 PlayMove1[2]=((Moves[1]+1)/10)+'0';
-162 PlayMove1[3]=((Moves[1]+1)%10)+'0';
-163
-164 PlayMove2[0]=((Moves[2]+1)/10)+'0';
-165 PlayMove2[1]=((Moves[2]+1)%10)+'0';
-166 PlayMove2[2]=((Moves[3]+1)/10)+'0';
-167 PlayMove2[3]=((Moves[3]+1)%10)+'0';
-168
-169 for (i=0;i<=3;i++){
-170 while (BusyUSART());
-171 WriteUSART(PlayMove1[i]); //Sends the first move
-172 }
-173 for (i=0;i<=3;i++){
-174 while (BusyUSART());
-175 WriteUSART(PlayMove2[i]); //Sends the second move
-176 }
-177 display_my(PlayMove1,PlayMove2); //displays move on LCD
-178 }
-179 
- 1 /*Appendix B - LCD Functions*/
- 2
- 3 void delay() {
- 4 Delay1KTCYx( 1 );
- 5 } //Defining the delay function
- 6 void longdelay() {
- 7 Delay1KTCYx( 14 );
- 8 } //Defining the delay function
- 9 void dis_cmd(char cmd_value) {
- 10 char cmd_value1;
- 11 cmd_value1 = ((cmd_value >> 4) & 0x0F) ; //mask lower nibble because RD0-RD3 pins are used.
- 12 DATA_PORT = cmd_value1; // send to LCD
- 13 EN=1;
- 14 RS=0;
- 15 delay();
- 16 EN =0;
- 17 delay();
- 18 cmd_value1 = (cmd_value & 0x0F) ; // mask higher nibble
- 19 DATA_PORT = cmd_value1;// send to LCD
- 20 EN=1;
- 21 RS=0;
- 22 delay();
- 23 EN =0;
- 24 delay();
- 25 } //To send commands to the LCD, 4 bit mode
- 26 void interface() {
- 27 dis_cmd(0x28);
- 28 longdelay();
- 29 }
- 30 void line_down(){
- 31 dis_cmd(0xC0);
- 32 }
- 33 void DISPLAY_CURSOR() {
- 34 dis_cmd(0x08);
- 35 }
- 36 void clear_display() {
- 37 dis_cmd(0x01);
- 38 longdelay();
- 39 }
- 40 void blink() {
- 41 dis_cmd(0x0F);
- 42 }
- 43 void home () {
- 44 dis_cmd(0x02);
- 45 longdelay();
- 46 }
- 47 void dis_data(char data_value) {
- 48 char data_value1;
- 49 data_value1 = ((data_value >> 4) & 0x0F) ;
- 50 DATA_PORT = data_value1;
- 51 EN=1;
- 52 RS=1;
- 53 delay();
- 54 EN =0;
- 55 delay();
- 56 data_value1 = (data_value & 0x0F) ;
- 57 DATA_PORT = data_value1;
- 58 EN=1;
- 59 RS=1;
- 60 delay();
- 61 EN =0;
- 62 delay();
- 63 } //To send data to the LCD, 4 bit mode
- 64 void lcd(unsigned char ch) {
- 65 dis_data(ch);
- 66 }
- 67 void lcd_init() {
- 68 for(i=0;i<3;i++) {
- 69 dis_cmd( 0x02 ); // 4-bit mode
- 70 interface();}
- 71 DISPLAY_CURSOR();
- 72 clear_display();
- 73 blink();
- 74 home ();
- 75 dis_cmd( 0x06 ); // entry mode l-to-r, no shift
- 76 for (i=0;i<7;i++){
- 77 lcd(LCDStart[i]);
- 78 longdelay();}
- 79 } //initializing the LCD
- 80 void display_opp(char OppMoves[8]) {
- 81 clear_display();
- 82 for (i=0;i<8;i++){
- 83 lcd(LCDOpp[i]);}
- 84 line_down();
- 85 lcd('(');
- 86 for (i=0;i<8;i++){
- 87 if (i>0 && i%2==0 && i!=4){
- 88 lcd(',');}
- 89 if (i==4){
- 90 lcd(')');
- 91 lcd('&');
- 92 lcd('(');}
- 93 lcd(OppMoves[i]);}
- 94 lcd(')');
- 95 } //To display the Opposition Moves
- 96 void display_my(char MyMove1[4],char MyMove2[4]) {
- 97 clear_display();
- 98 for (i=0;i<8;i++){
- 99 lcd(LCDMy[i]);}
-100 line_down();
-101 lcd('(');
-102 for (i=0;i<4;i++){
-103 if (i>0 && i%2==0){
-104 lcd(',');}
-105 lcd(MyMove1[i]);}
-106 lcd(')');
-107 lcd('&');
-108 lcd('(');
-109 for (i=0;i<4;i++){
-110 if (i>0 && i%2==0){
-111 lcd(',');}
-112 lcd(MyMove2[i]);}
-113 lcd(')');
-114 } //Display Our moves
-115 void display_my_win(void) {
-116 unsigned char LCDWin[7]="We Win!";
-117 clear_display();
-118 for (i=0;i<7;i++){
-119 lcd(LCDWin[i]);}
-120 } //Display Our win
-121 void display_opp_win(void) {
-122 unsigned char LCDLose[11]="We Lose! :(";
-123 clear_display();
-124 for (i=0;i<11;i++){
-125 lcd(LCDLose[i]);}
-126 } //Display Our loss
- 1 /*Appendix C - Playing Algorithm*/
- 2
- 3 short abs(short x){
- 4 if(x>=0){return x;}
- 5 else{return (-x);}}
- 6 int influence(short x,short y,char grid[19][19],char side){
- 7 char X,O;short Inf=0;short e=1;short d;
- 8 if(side =='W'){
- 9 O='B';//Opponent side
- 10 X='W';//Our side
- 11 }else if(side =='B'){
- 12 O='W';//Opponent side
- 13 X='B';}//Our side
- 14 for(d=0;d<4;d++){
- 15 short Dir_Inf=0;
- 16 short initial_h=1;
- 17 short initial_v=1;
- 18 short step=1;
- 19 short Dir_h,Dir_v;
- 20 bool outer_break=false;
- 21 short h=0;
- 22 short v=0;
- 23 if (d==0){Dir_h=6;Dir_v=1;initial_v=0;}//Horizontal Check
- 24 else if (d==1){Dir_h=1;Dir_v=6;initial_h=0;}//Vertical Check
- 25 else if(d==2){Dir_h=6;Dir_v=6;}//Diagonal 1 Check
+  USART_ASYNCH_MODE &
+  USART_EIGHT_BIT &
+  USART_CONT_RX &
+  USART_BRGH_HIGH &
+  USART_ADDEN_OFF, 26);
+  lcd_init(); //Initiate the LCD
+  while (BusyUSART());
+  while (!DataRdyUSART());
+  side=ReadUSART(); //Reads the side to play
+  for (i=0;i<=3;i++){
+  while (!DataRdyUSART());
+  FirstMove[i]=ReadUSART(); //Reads the first move
+  }
+  x0=(FirstMove[0]-'0')*10+(FirstMove[1]-'0');
+  x0=x0-1;
+  y0=(FirstMove[2]-'0')*10+(FirstMove[3]-'0');
+  y0=y0-1;
+   //conversion of string to an array
+ if (side=='B' && turn==1){
+ grid[x0][y0]='B';
+ our_array1[0]=x0;
+ our_array1[1]=y0;
+ display_my(FirstMove,FirstMove);
+ }
+else if (side=='W' && turn==1){
+x1=x0;
+y1=y0;
+x2=x1;
+y2=y1;
+display_opp(FirstMove);
+  oppent_array1[0]=x1;
+  oppent_array1[1]=y1;
+  oppent_array2[0]=x2;
+  oppent_array2[1]=y2;
+  
+  M=Con6player(oppent_array1,oppent_array2,grid,side);
+  for (i=0;i<4;i++){
+  Moves[i]=*(M+i);  
+  } //Returns the moves to be played  
+  
+  PlayMove1[0]=((Moves[0]+1)/10)+'0';
+  PlayMove1[1]=((Moves[0]+1)%10)+'0';
+  PlayMove1[2]=((Moves[1]+1)/10)+'0';
+  PlayMove1[3]=((Moves[1]+1)%10)+'0';
+  PlayMove2[0]=((Moves[2]+1)/10)+'0';
+  PlayMove2[1]=((Moves[2]+1)%10)+'0';
+  PlayMove2[2]=((Moves[3]+1)/10)+'0';
+  PlayMove2[3]=((Moves[3]+1)%10)+'0';
+  //conversion of the array to a string
+  for (i=0;i<=3;i++){
+  while (BusyUSART());
+  WriteUSART(PlayMove1[i]); //Sends the first move
+  }
+  for (i=0;i<=3;i++){
+  while (BusyUSART());
+  WriteUSART(PlayMove2[i]); //Sends the second move
+   }
+   display_my(PlayMove1,PlayMove2);
+ }
+   while(1){
+   for (i=0;i<=7;i++){
+   while (!DataRdyUSART()); //reads the Opponents moves
+   SecondMove[i]=ReadUSART();
+   }
+   x1=(SecondMove[0]-'0')*10+(SecondMove[1]-'0');
+   x1=x1-1;
+   y1=(SecondMove[2]-'0')*10+(SecondMove[3]-'0');
+   y1=y1-1;
+   x2=(SecondMove[4]-'0')*10+(SecondMove[5]-'0');
+   x2=x2-1;
+   y2=(SecondMove[6]-'0')*10+(SecondMove[7]-'0');
+   y2=y2-1;
+ //conversion of string to array
+   display_opp(SecondMove); //Displays opponent move on LCD
+   oppent_array1[0]=x1;
+   oppent_array1[1]=y1;
+   oppent_array2[0]=x2;
+   oppent_array2[1]=y2;
+     
+  M=Con6player(oppent_array1,oppent_array2,grid,side); //returns the moves to be sent       
+  for (i=0;i<4;i++){
+  Moves[i]=*(M+i);
+  }
+  PlayMove1[0]=((Moves[0]+1)/10)+'0'; //conversion of array to string
+  PlayMove1[1]=((Moves[0]+1)%10)+'0';
+  PlayMove1[2]=((Moves[1]+1)/10)+'0';
+  PlayMove1[3]=((Moves[1]+1)%10)+'0';
+     
+  PlayMove2[0]=((Moves[2]+1)/10)+'0';
+  PlayMove2[1]=((Moves[2]+1)%10)+'0';
+  PlayMove2[2]=((Moves[3]+1)/10)+'0';
+  PlayMove2[3]=((Moves[3]+1)%10)+'0';
+     
+for (i=0;i<=3;i++){
+while (BusyUSART());
+WriteUSART(PlayMove1[i]); //Sends the first move
+ }
+ for (i=0;i<=3;i++){
+while (BusyUSART());
+WriteUSART(PlayMove2[i]); //Sends the second move
+ }
+display_my(PlayMove1,PlayMove2); //displays move on LCD
+ } 
+    /*Appendix B - LCD Functions*/
+
+  void delay() {
+   Delay1KTCYx( 1 );
+  } //Defining the delay function
+  void longdelay() {
+  Delay1KTCYx( 14 );
+  } //Defining the delay function
+  void dis_cmd(char cmd_value) {
+  char cmd_value1;
+  cmd_value1 = ((cmd_value >> 4) & 0x0F) ; //mask lower nibble because RD0-RD3 pins are used.
+  DATA_PORT = cmd_value1; // send to LCD
+  EN=1;
+  RS=0;
+  delay();
+  EN =0;
+  delay();
+  cmd_value1 = (cmd_value & 0x0F) ; // mask higher nibble
+  DATA_PORT = cmd_value1;// send to LCD
+  EN=1;
+  RS=0;
+  delay();
+ EN =0;
+  delay();
+  } //To send commands to the LCD, 4 bit mode
+  void interface() {
+ dis_cmd(0x28);
+ longdelay();
+ }
+  void line_down(){
+  dis_cmd(0xC0);
+  }
+  void DISPLAY_CURSOR() {
+  dis_cmd(0x08);
+  }
+  void clear_display() {
+  dis_cmd(0x01);
+  longdelay();
+  }
+ void blink() {
+  dis_cmd(0x0F);
+  }
+  void home () {
+ dis_cmd(0x02);
+  longdelay();
+  }
+  void dis_data(char data_value) {
+  char data_value1;
+  data_value1 = ((data_value >> 4) & 0x0F) ;
+  DATA_PORT = data_value1;
+  EN=1;
+  RS=1;
+  delay();
+  EN =0;
+  delay();
+ data_value1 = (data_value & 0x0F) ;
+  DATA_PORT = data_value1;
+  EN=1;
+  RS=1;
+ delay();
+ EN =0;
+ delay();
+ } //To send data to the LCD, 4 bit mode
+ void lcd(unsigned char ch) {
+ dis_data(ch);
+  }
+ void lcd_init() {
+ for(i=0;i<3;i++) {
+ dis_cmd( 0x02 ); // 4-bit mode
+ interface();}
+ DISPLAY_CURSOR();
+ clear_display();
+ blink();
+ home ();
+ dis_cmd( 0x06 ); // entry mode l-to-r, no shift
+  for (i=0;i<7;i++){
+ lcd(LCDStart[i]);
+ longdelay();}
+ } //initializing the LCD
+  void display_opp(char OppMoves[8]) {
+  clear_display();
+  for (i=0;i<8;i++){
+  lcd(LCDOpp[i]);}
+  line_down();
+  lcd('(');
+  for (i=0;i<8;i++){
+  if (i>0 && i%2==0 && i!=4){
+  lcd(',');}
+  if (i==4){
+  lcd(')');
+  lcd('&');
+  lcd('(');}
+  lcd(OppMoves[i]);}
+ lcd(')');
+  } //To display the Opposition Moves
+  void display_my(char MyMove1[4],char MyMove2[4]) {
+ clear_display();
+  for (i=0;i<8;i++){
+ lcd(LCDMy[i]);}
+ line_down();
+ lcd('(');
+ for (i=0;i<4;i++){
+ if (i>0 && i%2==0){
+ lcd(',');}
+ lcd(MyMove1[i]);}
+ lcd(')');
+ lcd('&');
+  lcd('(');
+   for (i=0;i<4;i++){
+ if (i>0 && i%2==0){
+ lcd(',');}
+lcd(MyMove2[i]);}
+lcd(')');
+} //Display Our moves
+ void display_my_win(void) {
+unsigned char LCDWin[7]="We Win!";
+clear_display();
+ for (i=0;i<7;i++){
+ lcd(LCDWin[i]);}
+ } //Display Our win
+ void display_opp_win(void) {
+ unsigned char LCDLose[11]="We Lose! :(";
+ clear_display();
+ for (i=0;i<11;i++){
+ lcd(LCDLose[i]);}
+ } //Display Our loss
+ /*Appendix C - Playing Algorithm*/
+
+  short abs(short x){
+  if(x>=0){return x;}
+  else{return (-x);}}
+  int influence(short x,short y,char grid[19][19],char side){
+  char X,O;short Inf=0;short e=1;short d;
+  if(side =='W'){
+  O='B';//Opponent side
+  X='W';//Our side
+  }else if(side =='B'){
+  O='W';//Opponent side
+ X='B';}//Our side
+  for(d=0;d<4;d++){
+ short Dir_Inf=0;
+ short initial_h=1;
+ short initial_v=1;
+ short step=1;
+ short Dir_h,Dir_v;
+ bool outer_break=false;
+ short h=0;
+ short v=0;
+ if (d==0){Dir_h=6;Dir_v=1;initial_v=0;}//Horizontal Check
+ else if (d==1){Dir_h=1;Dir_v=6;initial_h=0;}//Vertical Check
+ else if(d==2){Dir_h=6;Dir_v=6;}//Diagonal 1 Check
  26 else{Dir_h=6;Dir_v=-6;initial_v=-1;step=-1;}
  27 for(h=initial_h;h<Dir_h;h++){
  28 if (outer_break){outer_break=false;break;}
