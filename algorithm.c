@@ -165,6 +165,7 @@ else if (side=='W' && turn==1){
    while (!DataRdyUSART()); //reads the Opponents moves
    SecondMove[i]=ReadUSART();
    }
+     
    x1=(SecondMove[0]-'0')*10+(SecondMove[1]-'0');
    x1=x1-1;
    y1=(SecondMove[2]-'0')*10+(SecondMove[3]-'0');
@@ -184,6 +185,7 @@ else if (side=='W' && turn==1){
   for (i=0;i<4;i++){
   Moves[i]=*(M+i);
   }
+     
   PlayMove1[0]=((Moves[0]+1)/10)+'0'; //conversion of array to string
   PlayMove1[1]=((Moves[0]+1)%10)+'0';
   PlayMove1[2]=((Moves[1]+1)/10)+'0';
@@ -198,6 +200,7 @@ for (i=0;i<=3;i++){
 while (BusyUSART());
 WriteUSART(PlayMove1[i]); //Sends the first move
  }
+     
  for (i=0;i<=3;i++){
 while (BusyUSART());
 WriteUSART(PlayMove2[i]); //Sends the second move
