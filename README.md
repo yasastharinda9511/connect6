@@ -17,7 +17,6 @@ The objective of the project was
 
 ## PCB Layout and Final Implementation
 
-
-
+![Screenshot (553)](https://user-images.githubusercontent.com/37435024/99905677-571d9480-2cf8-11eb-9176-7784beafcbca.png)
 
  
