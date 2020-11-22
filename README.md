@@ -9,3 +9,9 @@ The objective of the project was
             a.To obtain the assigned color by the server
             b.To transmit/receive the coordinates (row number, column number) of each move by a player.
             c.To receive an indication when one player achieves the target and to stop the game after that.
+            
+
+## Game Algorithm
+
+
+ 
