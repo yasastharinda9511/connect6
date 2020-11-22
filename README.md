@@ -13,5 +13,11 @@ The objective of the project was
 
 ## Game Algorithm
 
+![Screenshot (552)](https://user-images.githubusercontent.com/37435024/99905628-fbeba200-2cf7-11eb-9de5-db128a6d0c20.png)
+
+## PCB Layout and Final Implementation
+
+
+
 
  
